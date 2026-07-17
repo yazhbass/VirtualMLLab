@@ -1,0 +1,14 @@
+Katherine Carter 183 81 female
+David Reed 187 60.0 male
+Stephen Jones 192 96.0 male
+Jerry Allen 204 91.0 male
+Billy Wright 180 66.0 male
+Earl Green 184 52.0 male
+Todd Bell 174 53.0 male
+Martin White 177 91.0 male
+Elizabeth Ross 138 37 female
+Kenneth Cox 200 82.0 male
+Frank Perry 193 79.0 male
+Wayne Sanders 189 79.0 male
+Carol King 145 59 female
+Henry Smith 188 53.0 male

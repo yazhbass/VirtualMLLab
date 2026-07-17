@@ -1,0 +1,294 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 3 - Support Vector Machine
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}" class="back-btn">
+⬅ Back to Home
+</a>
+
+<h1>Experiment 3</h1>
+
+<h2>Support Vector Machine Classifier using Linear Kernel on Social Network Ads Dataset</h2>
+
+<hr>
+
+<h3>Aim</h3>
+
+<p>
+To write a Python program for Support Vector Machine (SVM) classifier using the Scikit-learn module and Social Network Ads dataset to classify whether a customer purchases an SUV car or not.
+</p>
+
+<hr>
+
+<h3>Algorithm</h3>
+
+<ol>
+<li>Load the Social Network Ads dataset using pandas.</li>
+<li>Select Age and Estimated Salary as input features.</li>
+<li>Select Purchased as target variable.</li>
+<li>Split dataset into training (75%) and testing (25%).</li>
+<li>Perform feature scaling using StandardScaler.</li>
+<li>Create SVM classifier using Linear Kernel.</li>
+<li>Train the classifier.</li>
+<li>Predict the test data.</li>
+<li>Generate Confusion Matrix.</li>
+<li>Calculate Accuracy, Precision and Recall.</li>
+<li>Display the decision boundary.</li>
+</ol>
+
+<hr>
+
+<h3>About Dataset</h3>
+
+<p>
+
+The Social Network Ads dataset contains customer information used to predict whether a customer purchases an SUV based on Age and Estimated Salary.
+
+</p>
+
+<h4>Dataset Characteristics</h4>
+
+<ul>
+
+<li><b>Number of Samples:</b> 400</li>
+
+<li><b>Number of Features:</b> 5</li>
+
+<li><b>Target:</b> Purchased (0/1)</li>
+
+</ul>
+
+<h4>Features</h4>
+
+<ul>
+
+<li>User ID</li>
+
+<li>Gender</li>
+
+<li>Age</li>
+
+<li>Estimated Salary</li>
+
+<li>Purchased</li>
+
+</ul>
+
+<hr>
+
+<h3>Python Program</h3>
+
+<pre><code>
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from matplotlib.colors import ListedColormap
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.svm import SVC
+
+from sklearn.metrics import confusion_matrix,accuracy_score,precision_score,recall_score
+
+dataset=pd.read_csv("datasets/Social_Network_Ads.csv")
+
+X=dataset.iloc[:,[2,3]].values
+
+y=dataset.iloc[:,4].values
+
+X_train,X_test,y_train,y_test=train_test_split(
+X,
+y,
+test_size=0.25,
+random_state=0
+)
+
+sc=StandardScaler()
+
+X_train=sc.fit_transform(X_train)
+
+X_test=sc.transform(X_test)
+
+classifier=SVC(kernel="linear",random_state=0)
+
+classifier.fit(X_train,y_train)
+
+y_pred=classifier.predict(X_test)
+
+cm=confusion_matrix(y_test,y_pred)
+
+accuracy=accuracy_score(y_test,y_pred)
+
+precision=precision_score(y_test,y_pred)
+
+recall=recall_score(y_test,y_pred)
+
+print("Confusion Matrix")
+
+print(cm)
+
+print("Accuracy :",accuracy)
+
+print("Precision :",precision)
+
+print("Recall :",recall)
+
+X_set,y_set=X_test,y_test
+
+X1,X2=np.meshgrid(
+
+np.arange(X_set[:,0].min()-1,X_set[:,0].max()+1,0.01),
+
+np.arange(X_set[:,1].min()-1,X_set[:,1].max()+1,0.01)
+
+)
+
+plt.figure(figsize=(8,6))
+
+plt.contourf(
+
+X1,
+
+X2,
+
+classifier.predict(
+
+np.array([X1.ravel(),X2.ravel()]).T
+
+).reshape(X1.shape),
+
+alpha=0.75,
+
+cmap=ListedColormap(("red","green"))
+
+)
+
+plt.xlim(X1.min(),X1.max())
+
+plt.ylim(X2.min(),X2.max())
+
+for i,j in enumerate(np.unique(y_set)):
+
+    plt.scatter(
+
+    X_set[y_set==j,0],
+
+    X_set[y_set==j,1],
+
+    c=ListedColormap(("red","green"))(i),
+
+    label=j
+
+    )
+
+plt.title("SVM Test Set")
+
+plt.xlabel("Age")
+
+plt.ylabel("Estimated Salary")
+
+plt.legend()
+
+plt.grid(True)
+
+plt.savefig("static/graphs/svm.png")
+
+plt.close()
+
+</code></pre>
+
+<br>
+
+<a href="{{ url_for('run_experiment', id=3) }}">
+<button type="button">
+▶ Run Experiment
+</button>
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+
+<pre>{{ output }}</pre>
+
+{% else %}
+
+<p><b>Click "Run Experiment" to execute the program.</b></p>
+
+{% endif %}
+
+<hr>
+
+<h3>SVM Decision Boundary</h3>
+
+{% if graph %}
+
+<img src="{{ url_for('static', filename=graph) }}" width="750">
+
+{% else %}
+
+<p><b>Graph will appear here after running the experiment.</b></p>
+
+{% endif %}
+
+<hr>
+
+<h3>Pre-Lab Questions</h3>
+
+<ol>
+
+<li>
+
+Why is Standard Scaling essential before training an SVM? Write the mathematical formula for Standard Scaling.
+
+</li>
+
+<li>
+
+What is the purpose of the Pandas library? Explain any four commonly used functions.
+
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Post-Lab Questions</h3>
+
+<ol>
+
+<li>
+
+Calculate Accuracy, Precision and Recall from the confusion matrix of the Linear Kernel SVM.
+
+</li>
+
+<li>
+
+Train the model using Polynomial, Gaussian (RBF), and Sigmoid kernels. Compare Accuracy, Precision and Recall. Which kernel performs best?
+
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Result</h3>
+
+<p>
+
+The Support Vector Machine classifier using Linear Kernel was successfully implemented on the Social Network Ads dataset. The classifier predicted customer purchase behavior and its performance was evaluated using Accuracy, Precision, Recall and Confusion Matrix. The decision boundary was visualized successfully.
+
+</p>
+
+{% endblock %}

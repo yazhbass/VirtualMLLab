@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Virtual Machine Learning Laboratory
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard">
+
+    <h2 class="main-title">
+        Machine Learning Experiments
+    </h2>
+
+    <p class="subtitle">
+        Select an experiment to view the theory, algorithm, Python program, and execute it.
+    </p>
+
+    <div class="card-container">
+
+        {% for exp in experiments %}
+
+        <div class="card">
+
+            <div class="exp-number">
+                Experiment {{ exp.id }}
+            </div>
+
+            <div class="exp-title">
+                {{ exp.title }}
+            </div>
+
+            <a href="{{ url_for('experiment', id=exp.id) }}"
+               class="btn">
+                Open Experiment
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

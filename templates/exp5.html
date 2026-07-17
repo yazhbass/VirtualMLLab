@@ -1,0 +1,347 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 5 - Decision Tree Classifier
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}" class="back-btn">
+⬅ Back to Home
+</a>
+
+<h1>Experiment 5</h1>
+
+<h2>
+Classification of Iris Flower Dataset using Decision Tree Classifier
+</h2>
+
+<hr>
+
+<h3>Aim</h3>
+
+<p>
+To write a Python program for Decision Tree Classifier using the Scikit-learn module to classify the Iris flower dataset.
+</p>
+
+<hr>
+
+<h3>Algorithm</h3>
+
+<ol>
+
+<li>Load the Iris dataset using <b>load_iris()</b> from sklearn.datasets.</li>
+
+<li>Prepare the input features (sepal length, sepal width, petal length, petal width) and target labels.</li>
+
+<li>Split the dataset into training and testing sets.</li>
+
+<li>Create a DecisionTreeClassifier object.</li>
+
+<li>Train the model using the training data.</li>
+
+<li>Predict the testing data.</li>
+
+<li>Calculate the accuracy score.</li>
+
+<li>Generate the confusion matrix.</li>
+
+<li>Visualize the decision tree.</li>
+
+</ol>
+
+<hr>
+
+<h3>About Dataset</h3>
+
+<p>
+
+The Iris dataset consists of 150 samples belonging to three classes.
+
+</p>
+
+<ul>
+
+<li>Iris Setosa</li>
+
+<li>Iris Versicolor</li>
+
+<li>Iris Virginica</li>
+
+</ul>
+
+<h4>Dataset Characteristics</h4>
+
+<ul>
+
+<li><b>Number of Instances:</b>150</li>
+
+<li><b>Number of Attributes:</b>4</li>
+
+<li><b>Classes:</b>3</li>
+
+</ul>
+
+<h4>Attributes</h4>
+
+<ul>
+
+<li>Sepal Length</li>
+
+<li>Sepal Width</li>
+
+<li>Petal Length</li>
+
+<li>Petal Width</li>
+
+</ul>
+
+<hr>
+
+<h3>Python Program</h3>
+
+<pre><code>
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
+from sklearn.datasets import load_iris
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import ConfusionMatrixDisplay
+
+iris_data = load_iris()
+
+X = pd.DataFrame(
+    iris_data.data,
+    columns=iris_data.feature_names
+)
+
+y = iris_data.target
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    X,
+    y,
+    test_size=0.2,
+    random_state=1
+
+)
+
+clf = DecisionTreeClassifier(
+
+    random_state=1
+
+)
+
+clf.fit(
+
+    X_train,
+    y_train
+
+)
+
+y_pred = clf.predict(
+
+    X_test
+
+)
+
+accuracy = accuracy_score(
+
+    y_test,
+    y_pred
+
+)
+
+print("Accuracy :", accuracy)
+
+cm = confusion_matrix(
+
+    y_test,
+    y_pred
+
+)
+
+print("Confusion Matrix")
+
+print(cm)
+
+ConfusionMatrixDisplay(
+    confusion_matrix=cm,
+    display_labels=iris_data.target_names
+).plot()
+
+plt.title("Confusion Matrix")
+
+plt.savefig(
+    "static/graphs/iris_confusion_matrix.png",
+    dpi=150,
+    bbox_inches="tight"
+)
+
+plt.close()
+
+plt.figure(figsize=(12,8))
+
+plot_tree(
+
+    clf,
+
+    feature_names=iris_data.feature_names,
+
+    class_names=iris_data.target_names,
+
+    filled=True,
+
+    rounded=True,
+
+    fontsize=10
+
+)
+
+plt.title("Decision Tree Classifier")
+
+plt.savefig(
+    "static/graphs/iris_decision_tree.png",
+    dpi=150,
+    bbox_inches="tight"
+)
+
+plt.close()
+
+print("Graphs Generated Successfully")
+
+</code></pre>
+
+<br>
+
+<a href="{{ url_for('run_experiment', id=5) }}">
+
+<button type="button">
+
+▶ Run Experiment
+
+</button>
+
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+
+<pre>{{ output }}</pre>
+
+{% else %}
+
+<p>
+
+<b>
+
+Click "Run Experiment" to execute the program.
+
+</b>
+
+</p>
+
+{% endif %}
+
+<hr>
+
+<h3>Confusion Matrix</h3>
+
+{% if graph1 %}
+
+<img src="{{ url_for('static', filename=graph1) }}"
+width="750">
+
+{% else %}
+
+<p>
+
+<b>
+
+Confusion Matrix will appear here after running the experiment.
+
+</b>
+
+</p>
+
+{% endif %}
+
+<hr>
+
+<h3>Decision Tree Visualization</h3>
+
+{% if graph2 %}
+
+<img src="{{ url_for('static', filename=graph2) }}"
+width="900">
+
+{% else %}
+
+<p>
+
+<b>
+
+Decision Tree graph will appear here after running the experiment.
+
+</b>
+
+</p>
+
+{% endif %}
+<hr>
+
+<h3>Pre-Lab Questions</h3>
+
+<ol>
+
+<li>
+Why are Decision Trees prone to overfitting? Explain how overfitting can be reduced using parameters such as <b>max_depth</b>, <b>min_samples_split</b>, or pruning.
+</li>
+
+<li>
+Differentiate between a Decision Tree Classifier and a Decision Tree Regressor. In which situations would each be used?
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Post-Lab Questions</h3>
+
+<ol>
+
+<li>
+Modify the Decision Tree by setting <b>max_depth = 2</b>. Compare the accuracy with the original model and explain the differences.
+</li>
+
+<li>
+Train the model using the <b>entropy</b> criterion instead of <b>gini</b>. Compare the confusion matrix, accuracy, and tree structure. Which criterion performs better for the Iris dataset?
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Result</h3>
+
+<p>
+
+The Decision Tree Classifier was successfully implemented using the Iris dataset.
+
+The model was trained and tested successfully. The classification accuracy was calculated, and the confusion matrix was generated to evaluate the model performance.
+
+The trained Decision Tree was visualized, demonstrating how the classifier predicts different Iris flower species based on the input features.
+
+</p>
+
+{% endblock %}

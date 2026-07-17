@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Virtual Machine Learning Laboratory</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        body{
+
+            margin:0;
+
+            font-family:Arial, Helvetica, sans-serif;
+
+            background:url("{{ url_for('static', filename='images/ml_bg.jpg') }}");
+
+            background-size:cover;
+
+            background-position:center;
+
+            background-repeat:no-repeat;
+
+            height:100vh;
+
+            overflow:hidden;
+
+        }
+
+        .overlay{
+
+            width:100%;
+
+            height:100vh;
+
+            background:rgba(0,0,0,.55);
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+        }
+
+        .welcome-card{
+
+            width:750px;
+
+            background:rgba(255,255,255,.15);
+
+            backdrop-filter:blur(12px);
+
+            border-radius:20px;
+
+            padding:45px;
+
+            text-align:center;
+
+            color:white;
+
+            box-shadow:0 10px 30px rgba(0,0,0,.4);
+
+            position:relative;
+
+        }
+
+        /* Small logo */
+
+        .welcome-logo{
+
+            position:absolute;
+
+            top:15px;
+
+            left:20px;
+
+            width:70px;
+
+            background:white;
+
+            padding:5px;
+
+            border-radius:8px;
+
+        }
+
+        h1{
+
+            font-size:36px;
+
+            margin-bottom:10px;
+
+        }
+
+        h2{
+
+            font-size:24px;
+
+            margin-bottom:8px;
+
+        }
+
+        h3{
+
+            font-size:20px;
+
+            margin-bottom:25px;
+
+            color:#FFD700;
+
+        }
+
+        p{
+
+            font-size:18px;
+
+            line-height:30px;
+
+            margin-bottom:35px;
+
+        }
+
+        .enter-btn{
+
+            display:inline-block;
+
+            text-decoration:none;
+
+            background:#FFD700;
+
+            color:#0b4ea2;
+
+            padding:15px 35px;
+
+            border-radius:8px;
+
+            font-size:20px;
+
+            font-weight:bold;
+
+            transition:.3s;
+
+        }
+
+        .enter-btn:hover{
+
+            background:white;
+
+            transform:scale(1.05);
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="overlay">
+
+<div class="welcome-card">
+
+<img src="{{ url_for('static', filename='images/srm_logo.png') }}"
+     class="welcome-logo"
+     alt="SRM Logo">
+
+<h1>SRM Institute of Science and Technology</h1>
+
+<h2>Department of Electronics and Communication Engineering</h2>
+
+<h3>Virtual Machine Learning Laboratory</h3>
+
+<p>
+
+Welcome to the Virtual Machine Learning Laboratory.
+
+This platform enables students to perform Machine Learning experiments,
+execute Python programs, visualize graphs, and understand algorithms
+through an interactive virtual environment.
+
+</p>
+
+<a href="{{ url_for('home') }}" class="enter-btn">
+
+Enter Virtual Lab →
+
+</a>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

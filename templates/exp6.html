@@ -1,0 +1,335 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 6 - K-Means Clustering
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}" class="back-btn">
+⬅ Back to Home
+</a>
+
+<h1>Experiment 6</h1>
+
+<h2>
+K-Means Clustering Algorithm on Simulated Blob Data
+</h2>
+
+<hr>
+
+<h3>Aim</h3>
+
+<p>
+To write a Python program to generate a synthetic blob dataset and cluster the data using the K-Means Clustering algorithm from the Scikit-learn library.
+</p>
+
+<hr>
+
+<h3>Algorithm</h3>
+
+<ol>
+
+<li>Import the required libraries such as Matplotlib and Scikit-learn.</li>
+
+<li>Create a synthetic dataset using <b>make_blobs()</b> with 150 samples, 2 features, and 3 cluster centers.</li>
+
+<li>Visualize the generated dataset.</li>
+
+<li>Create a KMeans object by specifying the number of clusters, initialization method, number of initializations, maximum iterations, tolerance and random state.</li>
+
+<li>Train the K-Means model using <b>fit_predict()</b>.</li>
+
+<li>Assign every data point to its nearest cluster.</li>
+
+<li>Display each cluster using different colors.</li>
+
+<li>Display the cluster centroids.</li>
+
+<li>Visualize the clustered dataset.</li>
+
+</ol>
+
+<hr>
+
+<h3>About Dataset</h3>
+
+<p>
+
+The dataset is generated using <b>make_blobs()</b> from the Scikit-learn library. It creates synthetic Gaussian clusters that are widely used for demonstrating clustering algorithms.
+
+</p>
+
+<h4>Dataset Characteristics</h4>
+
+<ul>
+
+<li><b>Number of Samples :</b> 150</li>
+
+<li><b>Number of Features :</b> 2</li>
+
+<li><b>Number of Clusters :</b> 3</li>
+
+<li><b>Cluster Standard Deviation :</b> 0.5</li>
+
+<li><b>Random State :</b> 0</li>
+
+</ul>
+
+<h4>Other Synthetic Datasets</h4>
+
+<ul>
+
+<li><b>make_moons()</b> - Generates two interleaving half-moons.</li>
+
+<li><b>make_circles()</b> - Generates concentric circular data.</li>
+
+</ul>
+
+<hr>
+
+<h3>Python Program</h3>
+
+<pre><code>
+
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import make_blobs
+
+from sklearn.cluster import KMeans
+
+# Generate Dataset
+
+X, y = make_blobs(
+
+    n_samples=150,
+
+    n_features=2,
+
+    centers=3,
+
+    cluster_std=0.5,
+
+    shuffle=True,
+
+    random_state=0
+
+)
+
+# Visualize Dataset
+
+plt.figure(figsize=(7,6))
+
+plt.scatter(
+
+    X[:,0],
+
+    X[:,1],
+
+    c='white',
+
+    edgecolor='black',
+
+    marker='o',
+
+    s=50
+
+)
+
+plt.title("Generated Blob Dataset")
+
+plt.xlabel("Feature 1")
+
+plt.ylabel("Feature 2")
+
+plt.grid(True)
+
+plt.savefig("static/graphs/blob_dataset.png")
+
+plt.close()
+
+# Create KMeans Model
+
+km = KMeans(
+
+    n_clusters=3,
+
+    init='random',
+
+    n_init=10,
+
+    max_iter=300,
+
+    tol=1e-4,
+
+    random_state=0
+
+)
+
+# Fit Model
+
+y_km = km.fit_predict(X)
+
+# Cluster Visualization
+
+plt.figure(figsize=(8,6))
+
+plt.scatter(
+X[y_km==0,0],
+X[y_km==0,1],
+s=50,
+c='lightgreen',
+marker='s',
+edgecolor='black',
+label='Cluster 1'
+)
+
+plt.scatter(
+X[y_km==1,0],
+X[y_km==1,1],
+s=50,
+c='orange',
+marker='o',
+edgecolor='black',
+label='Cluster 2'
+)
+
+plt.scatter(
+X[y_km==2,0],
+X[y_km==2,1],
+s=50,
+c='lightblue',
+marker='v',
+edgecolor='black',
+label='Cluster 3'
+)
+
+plt.scatter(
+km.cluster_centers_[:,0],
+km.cluster_centers_[:,1],
+s=250,
+marker='*',
+c='red',
+edgecolor='black',
+label='Centroids'
+)
+
+plt.legend()
+
+plt.grid()
+
+plt.title("K-Means Clustering on Blob Dataset")
+
+plt.xlabel("Feature 1")
+
+plt.ylabel("Feature 2")
+
+plt.savefig("static/graphs/kmeans.png")
+
+plt.close()
+
+print("Dataset Generated Successfully")
+
+print()
+
+print("Number of Clusters :",km.n_clusters)
+
+print()
+
+print("Cluster Centers")
+
+print(km.cluster_centers_)
+
+</code></pre>
+
+<br>
+
+<a href="{{ url_for('run_experiment', id=6) }}">
+
+<button type="button">
+
+▶ Run Experiment
+
+</button>
+
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+
+<pre>{{ output }}</pre>
+
+{% else %}
+
+<p>
+
+<b>Click "Run Experiment" to execute the program.</b>
+
+</p>
+
+{% endif %}
+
+<hr>
+
+<h3>Cluster Visualization</h3>
+
+{% if graph %}
+
+<img src="{{ url_for('static', filename=graph) }}"
+width="750">
+
+{% else %}
+
+<p>
+
+<b>Cluster visualization will appear here after running the experiment.</b>
+
+</p>
+
+{% endif %}
+<hr>
+
+<h3>Pre-Lab Questions</h3>
+
+<ol>
+
+<li>
+What is the role of the parameter <b>k</b> (number of clusters) in the K-Means algorithm? What happens if the chosen value of <b>k</b> is too small or too large?
+</li>
+
+<li>
+What is the significance of centroids in K-Means clustering? How are they updated during the clustering process?
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Post-Lab Questions</h3>
+
+<ol>
+
+<li>
+Modify the program to use the <b>make_circles()</b> dataset instead of <b>make_blobs()</b>. Display the resulting clustering plot and explain why K-Means performs poorly on circular datasets.
+</li>
+
+<li>
+Change the value of <b>cluster_std</b> in <b>make_blobs()</b> (for example, 0.2, 1.0, and 2.0). Compare the clustering results and explain how cluster spread affects the K-Means algorithm.
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Result</h3>
+
+<p>
+
+The K-Means Clustering algorithm was successfully implemented using a synthetic Blob dataset generated with the <b>make_blobs()</b> function. The dataset was clustered into three groups, and the cluster centroids were identified successfully. The clustered data and centroid locations were visualized using Matplotlib.
+
+</p>
+
+{% endblock %}

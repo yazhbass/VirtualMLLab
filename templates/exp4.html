@@ -1,0 +1,495 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 4 - K Nearest Neighbors Classifier
+{% endblock %}
+
+
+{% block content %}
+
+
+<a href="{{ url_for('home') }}" class="back-btn">
+⬅ Back to Home
+</a>
+
+
+<h1>Experiment 4</h1>
+
+
+<h2>
+K Nearest Neighbors Classifier with Uniform and Distance Weights on Iris Dataset
+</h2>
+
+
+<hr>
+
+
+<h3>Aim</h3>
+
+<p>
+To write a Python program that implements and visualizes the decision boundaries of a K-Nearest Neighbors (KNN) classifier on the Iris dataset using different weighting strategies such as uniform and distance weights.
+</p>
+
+
+
+<hr>
+
+
+<h3>Algorithm</h3>
+
+<ol>
+
+<li>
+Load the Iris dataset using load_iris().
+</li>
+
+<li>
+Select sepal length and sepal width as input features.
+</li>
+
+<li>
+Extract target labels representing three Iris classes.
+</li>
+
+<li>
+Split the dataset into training and testing sets using train_test_split with stratify=y.
+</li>
+
+<li>
+Create a pipeline with StandardScaler and KNeighborsClassifier.
+</li>
+
+<li>
+Initialize two subplots for visualizing decision boundaries.
+</li>
+
+<li>
+Train KNN classifier using uniform and distance weighting strategies.
+</li>
+
+<li>
+Generate decision boundaries for both models.
+</li>
+
+<li>
+Visualize classification regions and data points.
+</li>
+
+</ol>
+
+
+
+<hr>
+
+
+<h3>About the Dataset</h3>
+
+
+<p>
+
+The Iris dataset consists of measurements of three different Iris flower species. The dataset contains sepal and petal measurements and is widely used for classification experiments.
+
+</p>
+
+
+<h4>Dataset Characteristics</h4>
+
+
+<ul>
+
+<li>
+<b>Number of Instances:</b> 150
+</li>
+
+
+<li>
+<b>Number of Classes:</b> 3
+</li>
+
+
+<li>
+<b>Number of Attributes:</b> 4 numeric attributes
+</li>
+
+
+<li>
+<b>Classes:</b> Iris Setosa, Iris Versicolour, Iris Virginica
+</li>
+
+</ul>
+
+
+
+<h4>Attributes</h4>
+
+
+<ul>
+
+<li>
+Sepal Length (cm)
+</li>
+
+<li>
+Sepal Width (cm)
+</li>
+
+<li>
+Petal Length (cm)
+</li>
+
+<li>
+Petal Width (cm)
+</li>
+
+</ul>
+
+
+<hr>
+
+
+
+<h3>Python Program</h3>
+
+
+<pre><code>
+
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import load_iris
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.neighbors import KNeighborsClassifier
+
+from sklearn.pipeline import Pipeline
+
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.inspection import DecisionBoundaryDisplay
+
+
+
+# Load Iris Dataset
+
+iris = load_iris(as_frame=True)
+
+
+
+# Feature Selection
+
+X = iris.data[
+[
+"sepal length (cm)",
+"sepal width (cm)"
+]
+]
+
+
+y = iris.target
+
+
+
+
+# Split Dataset
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    X,
+    y,
+    stratify=y,
+    random_state=0
+
+)
+
+
+
+
+# Create KNN Pipeline
+
+clf = Pipeline(
+
+steps=[
+
+(
+"scaler",
+StandardScaler()
+),
+
+
+(
+"knn",
+KNeighborsClassifier(
+n_neighbors=11
+)
+)
+
+]
+
+)
+
+
+
+# Create Subplots
+
+fig, axs = plt.subplots(
+
+ncols=2,
+
+figsize=(12,5)
+
+)
+
+
+
+# Train with Different Weights
+
+for ax, weights in zip(
+axs,
+("uniform","distance")
+):
+
+
+    clf.set_params(
+        knn__weights=weights
+    )
+
+
+    clf.fit(
+        X_train,
+        y_train
+    )
+
+
+
+    disp = DecisionBoundaryDisplay.from_estimator(
+
+        clf,
+
+        X_test,
+
+        response_method="predict",
+
+        plot_method="pcolormesh",
+
+        xlabel=iris.feature_names[0],
+
+        ylabel=iris.feature_names[1],
+
+        shading="auto",
+
+        alpha=0.5,
+
+        ax=ax
+
+    )
+
+
+
+    scatter = disp.ax_.scatter(
+
+        X.iloc[:,0],
+
+        X.iloc[:,1],
+
+        c=y,
+
+        edgecolors="k"
+
+    )
+
+
+
+    disp.ax_.legend(
+
+        scatter.legend_elements()[0],
+
+        iris.target_names,
+
+        loc="lower left",
+
+        title="Classes"
+
+    )
+
+
+
+    disp.ax_.set_title(
+
+    f"KNN Classification\n(k={clf[-1].n_neighbors}, weights={weights})"
+
+    )
+
+
+
+
+plt.tight_layout()
+
+
+
+plt.savefig(
+
+"static/graphs/knn.png",
+
+dpi=150,
+
+bbox_inches="tight"
+
+)
+
+
+
+plt.close()
+
+
+
+</code></pre>
+
+
+
+<hr>
+
+
+<a href="{{ url_for('run_experiment', id=4) }}">
+
+<button type="button">
+
+▶ Run Experiment
+
+</button>
+
+</a>
+
+
+
+<hr>
+
+
+
+<h3>Program Output</h3>
+
+
+{% if output %}
+
+<pre>
+
+{{ output }}
+
+</pre>
+
+
+{% else %}
+
+<p>
+<b>
+Click "Run Experiment" to execute the KNN classifier.
+</b>
+</p>
+
+{% endif %}
+
+
+
+<hr>
+
+
+
+<h3>KNN Decision Boundary Visualization</h3>
+
+
+{% if graph %}
+
+
+<img src="{{ url_for('static', filename=graph) }}"
+width="800"
+alt="KNN Decision Boundary">
+
+
+{% else %}
+
+
+<p>
+<b>
+Decision boundary graph will appear after running the experiment.
+</b>
+</p>
+
+
+{% endif %}
+
+
+
+
+<hr>
+
+
+
+<h3>Pre-Lab Questions</h3>
+
+
+<ol>
+
+
+<li>
+
+What role does feature scaling play in the KNN algorithm?
+
+</li>
+
+
+<li>
+
+Why is KNN called a lazy learning algorithm?
+
+</li>
+
+
+</ol>
+
+
+
+
+<hr>
+
+
+
+<h3>Post-Lab Questions</h3>
+
+
+<ol>
+
+
+<li>
+
+Test the KNN model on another real-world dataset and compare the accuracy. What challenges are observed?
+
+</li>
+
+
+<li>
+
+How does the value of K affect the performance of KNN? Plot accuracy versus K values and analyze the result.
+
+</li>
+
+
+</ol>
+
+
+
+
+<hr>
+
+
+
+<h3>Result</h3>
+
+
+<p>
+
+The K-Nearest Neighbors classifier was successfully implemented using the Iris dataset. The model was trained using uniform and distance-based weighting strategies. The decision boundaries were visualized to compare the classification behavior of both approaches.
+
+</p>
+
+
+
+{% endblock %}

@@ -1,0 +1,320 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 10 - Naive Bayes Classifier
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}" class="back-btn">
+⬅ Back to Home
+</a>
+
+<h1>Experiment 10</h1>
+
+<h2>Gaussian Naive Bayes Classifier</h2>
+
+<hr>
+
+<h3>Aim</h3>
+
+<p>
+To write a Python program for implementing the Gaussian Naive Bayes Classifier using the Scikit-learn library and evaluate its performance.
+</p>
+
+<hr>
+
+<h3>Algorithm</h3>
+
+<ol>
+
+<li>Import the necessary libraries.</li>
+
+<li>Load the training dataset.</li>
+
+<li>Load the testing dataset.</li>
+
+<li>Read and preprocess the datasets.</li>
+
+<li>Separate features and labels.</li>
+
+<li>Create a Gaussian Naive Bayes classifier.</li>
+
+<li>Train the model using the training dataset.</li>
+
+<li>Predict the class labels of the testing dataset.</li>
+
+<li>Generate the Classification Report.</li>
+
+<li>Generate the Confusion Matrix.</li>
+
+<li>Display the results.</li>
+
+</ol>
+
+<hr>
+
+<h3>About Dataset</h3>
+
+<p>
+
+The dataset contains information about a person's height, weight and gender. The Gaussian Naive Bayes classifier predicts whether a person is <b>Male</b> or <b>Female</b> based on the height and weight values.
+
+</p>
+
+<h4>Dataset Characteristics</h4>
+
+<ul>
+
+<li><b>Training Dataset :</b> person_data.txt</li>
+
+<li><b>Testing Dataset :</b> person_testset.txt</li>
+
+<li><b>Features :</b> Height, Weight</li>
+
+<li><b>Target :</b> Gender</li>
+
+</ul>
+
+<hr>
+
+<h3>Python Program</h3>
+
+<pre><code>
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+from sklearn.naive_bayes import GaussianNB
+
+from sklearn.metrics import classification_report
+
+from sklearn.metrics import confusion_matrix
+
+from sklearn.metrics import ConfusionMatrixDisplay
+
+
+
+def prepare_person_dataset(fname):
+
+    persons=[]
+
+    with open(fname) as fh:
+
+        for line in fh:
+
+            persons.append(line.strip().split())
+
+
+
+    dataset=[]
+
+
+
+    for person in persons:
+
+        height_weight=(
+
+            float(person[2]),
+
+            float(person[3])
+
+        )
+
+
+
+        dataset.append(
+
+            (
+
+                height_weight,
+
+                person[4]
+
+            )
+
+        )
+
+
+
+    return dataset
+
+
+
+learnset=prepare_person_dataset(
+
+"person_data.txt"
+
+)
+
+
+
+testset=prepare_person_dataset(
+
+"person_testset.txt"
+
+)
+
+
+
+model=GaussianNB()
+
+
+
+w,l=zip(*learnset)
+
+w=np.array(w)
+
+l=np.array(l)
+
+model.fit(w,l)
+
+print(model)
+
+w,l=zip(*testset)
+
+w=np.array(w)
+
+l=np.array(l)
+
+predicted=model.predict(w)
+
+print(predicted)
+
+print(l)
+
+print(classification_report(l,predicted))
+
+cm=confusion_matrix(l,predicted)
+
+disp=ConfusionMatrixDisplay(
+
+confusion_matrix=cm,
+
+display_labels=model.classes_
+
+)
+
+disp.plot()
+
+plt.title(
+
+"Gaussian Naive Bayes Confusion Matrix"
+
+)
+
+plt.savefig(
+
+"static/graphs/naive_bayes.png"
+
+)
+
+plt.close()
+
+</code></pre>
+
+<br>
+
+<a href="{{ url_for('run_experiment', id=10) }}">
+
+<button type="button">
+
+▶ Run Experiment
+
+</button>
+
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+
+<pre>
+
+{{ output }}
+
+</pre>
+
+{% else %}
+
+<p>
+
+<b>
+
+Click "Run Experiment" to execute the program.
+
+</b>
+
+</p>
+
+{% endif %}
+
+<hr>
+
+<h3>Confusion Matrix</h3>
+
+{% if graph %}
+
+<img src="{{ url_for('static', filename=graph) }}"
+
+width="700">
+
+{% else %}
+
+<p>
+
+<b>
+
+Confusion Matrix will appear here after running the experiment.
+
+</b>
+
+</p>
+
+{% endif %}
+
+<hr>
+<h3>Pre-Lab Questions</h3>
+
+<ol>
+
+<li>
+What is the advantage of Gaussian Naive Bayes Classifier over the normal Naive Bayes Classifier?
+</li>
+
+<li>
+What do the input arguments of the GaussianNB classifier represent? Explain the role of features and target labels during training.
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Post-Lab Questions</h3>
+
+<ol>
+
+<li>
+Modify the program to implement the Bernoulli Naive Bayes classifier. Compare its performance with Gaussian Naive Bayes and explain the differences.
+</li>
+
+<li>
+Using suitable examples, explain how the performance of the Bayes classifier changes when the amount of training data is increased or decreased.
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Result</h3>
+
+<p>
+
+The Gaussian Naive Bayes classifier was successfully implemented using the Scikit-learn library. The classifier was trained using the training dataset and tested using the test dataset. The model performance was evaluated using the Classification Report and Confusion Matrix.
+
+</p>
+
+{% endblock %}

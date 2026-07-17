@@ -1,0 +1,278 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 9 - Hierarchical Clustering
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}" class="back-btn">
+⬅ Back to Home
+</a>
+
+<h1>Experiment 9</h1>
+
+<h2>Hierarchical Clustering on Iris Dataset</h2>
+
+<hr>
+
+<h3>Aim</h3>
+
+<p>
+To implement Hierarchical Clustering on the Iris dataset using the Agglomerative Clustering algorithm, visualize the resulting clusters through a dendrogram, and analyze the hierarchical structure to understand how different clusters are formed based on sample features.
+</p>
+
+<hr>
+
+<h3>Algorithm</h3>
+
+<ol>
+
+<li>Import the required libraries including NumPy, Matplotlib, SciPy and Scikit-Learn.</li>
+
+<li>Load the Iris dataset.</li>
+
+<li>Create the Agglomerative Clustering model.</li>
+
+<li>Fit the model using the Iris dataset.</li>
+
+<li>Generate the linkage matrix.</li>
+
+<li>Plot the dendrogram.</li>
+
+<li>Analyze the hierarchical cluster structure.</li>
+
+</ol>
+
+<hr>
+
+<h3>About Dataset</h3>
+
+<p>
+
+The Iris dataset is one of the best known datasets in machine learning and pattern recognition. It contains measurements of iris flowers belonging to three different species.
+
+</p>
+
+<h4>Dataset Characteristics</h4>
+
+<ul>
+
+<li><b>Classes:</b> 3</li>
+
+<li><b>Number of Instances:</b> 150</li>
+
+<li><b>Number of Attributes:</b> 4</li>
+
+<li><b>Features:</b> Sepal Length, Sepal Width, Petal Length, Petal Width</li>
+
+</ul>
+
+<h4>Class Labels</h4>
+
+<ul>
+
+<li>Iris Setosa</li>
+
+<li>Iris Versicolour</li>
+
+<li>Iris Virginica</li>
+
+</ul>
+
+<hr>
+
+<h3>Python Program</h3>
+
+<pre><code>
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+from scipy.cluster.hierarchy import dendrogram
+
+from sklearn.cluster import AgglomerativeClustering
+
+from sklearn.datasets import load_iris
+
+
+
+def plot_dendrogram(model, **kwargs):
+
+    counts = np.zeros(model.children_.shape[0])
+
+    n_samples = len(model.labels_)
+
+    for i, merge in enumerate(model.children_):
+
+        current_count = 0
+
+        for child_idx in merge:
+
+            if child_idx < n_samples:
+
+                current_count += 1
+
+            else:
+
+                current_count += counts[child_idx - n_samples]
+
+        counts[i] = current_count
+
+    linkage_matrix = np.column_stack(
+
+        [
+
+            model.children_,
+
+            model.distances_,
+
+            counts
+
+        ]
+
+    ).astype(float)
+
+    dendrogram(linkage_matrix, **kwargs)
+
+
+
+iris = load_iris()
+
+X = iris.data
+
+
+
+model = AgglomerativeClustering(
+
+    distance_threshold=0,
+
+    n_clusters=None
+)
+
+model.fit(X)
+
+plt.figure(figsize=(10,6))
+
+plt.title("Hierarchical Clustering Dendrogram")
+
+plot_dendrogram(
+
+    model,
+
+    truncate_mode="level",
+
+    p=3
+
+)
+
+plt.xlabel(
+
+"Number of points in node"
+
+)
+
+plt.ylabel("Distance")
+
+plt.grid(True)
+
+plt.savefig(
+
+"static/graphs/hierarchical.png"
+
+)
+
+plt.close()
+
+print("Hierarchical Clustering completed successfully.")
+
+</code></pre>
+
+<br>
+
+<a href="{{ url_for('run_experiment', id=9) }}">
+
+<button type="button">
+
+▶ Run Experiment
+
+</button>
+
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+
+<pre>{{ output }}</pre>
+
+{% else %}
+
+<p><b>Click "Run Experiment" to execute the program.</b></p>
+
+{% endif %}
+
+<hr>
+
+<h3>Dendrogram</h3>
+
+{% if graph %}
+
+<img src="{{ url_for('static', filename=graph) }}"
+width="750">
+
+{% else %}
+
+<p><b>The dendrogram will appear here after running the experiment.</b></p>
+
+{% endif %}
+
+<hr>
+<h3>Pre-Lab Questions</h3>
+
+<ol>
+
+<li>
+What is Hierarchical Clustering?
+</li>
+
+<li>
+Discuss the different types of linkage methods (Single, Complete, Average and Ward). How do they affect the clustering process?
+</li>
+
+<li>
+Describe the role of distance metrics such as Euclidean and Manhattan distance in clustering algorithms. How do they impact the formation of clusters?
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Post-Lab Questions</h3>
+
+<ol>
+
+<li>
+Test the model using different linkage methods (Single, Complete, Average and Ward). Compare the resulting dendrograms and explain the differences in cluster formation.
+</li>
+
+<li>
+Try different distance metrics while performing hierarchical clustering. How does the choice of distance metric affect the dendrogram and the final clusters?
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Result</h3>
+
+<p>
+
+Hierarchical Clustering was successfully implemented on the Iris dataset using the Agglomerative Clustering algorithm. The hierarchical relationships among the samples were visualized using a dendrogram, enabling the analysis of cluster formation based on the similarity between observations.
+
+</p>
+
+{% endblock %}

@@ -1,0 +1,305 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 8 - AdaBoost Classifier
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}" class="back-btn">
+⬅ Back to Home
+</a>
+
+<h1>Experiment 8</h1>
+
+<h2>
+Implementation of AdaBoost Classifier on the Iris Dataset
+</h2>
+
+<hr>
+
+<h3>Aim</h3>
+
+<p>
+To implement the AdaBoost algorithm on the Iris dataset and evaluate its performance using Accuracy, Precision, Recall and F1-Score.
+</p>
+
+<hr>
+
+<h3>Algorithm</h3>
+
+<ol>
+
+<li>Import Required Libraries.</li>
+
+<li>Load the Iris dataset.</li>
+
+<li>Display feature names and target classes.</li>
+
+<li>Split dataset into training (70%) and testing (30%).</li>
+
+<li>Create AdaBoostClassifier with 50 estimators.</li>
+
+<li>Train the classifier.</li>
+
+<li>Predict the testing data.</li>
+
+<li>Calculate Accuracy.</li>
+
+<li>Generate Classification Report.</li>
+
+<li>Display Confusion Matrix.</li>
+
+</ol>
+
+<hr>
+
+<h3>About Dataset</h3>
+
+<p>
+
+The Iris dataset is one of the most widely used datasets for pattern recognition and classification.
+
+It contains measurements of Iris flowers belonging to three different species.
+
+</p>
+
+<h4>Dataset Characteristics</h4>
+
+<ul>
+
+<li><b>Classes :</b> 3</li>
+
+<li><b>Instances :</b> 150</li>
+
+<li><b>Attributes :</b> 4 Numeric Features</li>
+
+<li><b>Samples per Class :</b> 50</li>
+
+<li><b>Total Samples :</b> 150</li>
+
+</ul>
+
+<h4>Features</h4>
+
+<ul>
+
+<li>Sepal Length (cm)</li>
+
+<li>Sepal Width (cm)</li>
+
+<li>Petal Length (cm)</li>
+
+<li>Petal Width (cm)</li>
+
+</ul>
+
+<h4>Class Labels</h4>
+
+<ul>
+
+<li>Iris Setosa</li>
+
+<li>Iris Versicolour</li>
+
+<li>Iris Virginica</li>
+
+</ul>
+
+<hr>
+
+<h3>Python Program</h3>
+
+<pre><code>
+
+import matplotlib
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt
+
+from sklearn.ensemble import AdaBoostClassifier
+
+from sklearn import datasets, metrics
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.metrics import ConfusionMatrixDisplay
+
+# Load Dataset
+
+iris = datasets.load_iris()
+
+X = iris.data
+y = iris.target
+
+print("Input Features:")
+print(iris.feature_names)
+
+print("\nTarget Classes:")
+print(iris.target_names)
+
+# Split Dataset
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    X,
+
+    y,
+
+    test_size=0.30,
+
+    random_state=42,
+
+    stratify=y
+
+)
+
+# Create AdaBoost Model
+
+classifier = AdaBoostClassifier(
+
+    n_estimators=50,
+
+    learning_rate=1,
+
+    random_state=42
+
+)
+
+classifier.fit(X_train,y_train)
+
+# Prediction
+
+y_pred = classifier.predict(X_test)
+
+accuracy = metrics.accuracy_score(y_test,y_pred)
+
+print("\nAccuracy :",accuracy)
+
+print("\nClassification Report")
+
+print(
+
+metrics.classification_report(
+
+y_test,
+
+y_pred,
+
+target_names=iris.target_names
+
+)
+
+)
+
+ConfusionMatrixDisplay.from_predictions(
+
+y_test,
+
+y_pred,
+
+display_labels=iris.target_names,
+
+cmap="Blues"
+
+)
+
+plt.title("AdaBoost Confusion Matrix")
+
+plt.savefig(
+
+"static/graphs/adaboost.png"
+
+)
+
+plt.close()
+
+</code></pre>
+
+<br>
+
+<a href="{{ url_for('run_experiment', id=8) }}">
+<button type="button">
+▶ Run Experiment
+</button>
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+
+<pre>{{ output }}</pre>
+
+{% else %}
+
+<p><b>Click "Run Experiment" to execute the program.</b></p>
+
+{% endif %}
+
+<hr>
+
+<h3>Confusion Matrix</h3>
+
+{% if graph %}
+
+<img src="{{ url_for('static', filename=graph) }}"
+width="700">
+
+{% else %}
+
+<p>
+
+<b>
+
+Confusion Matrix will appear here after running the experiment.
+
+</b>
+
+</p>
+
+{% endif %}
+
+<hr>
+<h3>Pre-Lab Questions</h3>
+
+<ol>
+
+<li>
+Why is AdaBoost often called a boosting algorithm?
+</li>
+
+<li>
+How does AdaBoost update the weights of misclassified samples in each iteration?
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Post-Lab Questions</h3>
+
+<ol>
+
+<li>
+What happens to AdaBoost performance if we increase <b>n_estimators</b> from 50 to 200?
+</li>
+
+<li>
+Compare the performance of AdaBoost when using a Decision Tree (default) versus Logistic Regression as the base learner.
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Result</h3>
+
+<p>
+
+The AdaBoost classifier was successfully implemented on the Iris dataset using the Scikit-learn library. The model was trained and tested successfully, and its performance was evaluated using Accuracy and the Classification Report. The Confusion Matrix was generated and displayed successfully.
+
+</p>
+
+{% endblock %}

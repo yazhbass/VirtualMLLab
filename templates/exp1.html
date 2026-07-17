@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 1 - Linear Regression
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}" class="back-btn">⬅ Back to Home</a>
+
+<h1>Experiment 1</h1>
+
+<h2>Linear Regression on Diabetes Dataset Using a Single Feature</h2>
+
+<hr>
+
+<h3>Aim</h3>
+
+<p>
+To write a Python program for Linear Regression using the Scikit-learn module and the Diabetes dataset to predict disease progression using the BMI feature.
+</p>
+
+<h3>Algorithm</h3>
+
+<ol>
+    <li>Load the Diabetes dataset.</li>
+    <li>Select BMI as the input feature.</li>
+    <li>Split the dataset into training and testing sets.</li>
+    <li>Create a Linear Regression model.</li>
+    <li>Train the model using the training data.</li>
+    <li>Predict disease progression using the testing data.</li>
+    <li>Calculate the Mean Squared Error (MSE).</li>
+    <li>Calculate the R² Score.</li>
+    <li>Display the regression graph.</li>
+</ol>
+
+<h3>Python Program</h3>
+
+<pre><code>
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_diabetes
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
+
+# Load dataset
+data = load_diabetes()
+X = data.data[:, [2]]
+y = data.target
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Create model
+model = LinearRegression()
+
+# Train model
+model.fit(X_train, y_train)
+
+# Predict
+y_pred = model.predict(X_test)
+
+# Print evaluation metrics
+print("Slope:", model.coef_[0])
+print("Intercept:", model.intercept_)
+print("Mean Squared Error:", mean_squared_error(y_test, y_pred))
+print("R² Score:", r2_score(y_test, y_pred))
+
+# Plot graph
+plt.scatter(X_test, y_test, color="black")
+plt.plot(X_test, y_pred, color="blue")
+
+plt.xlabel("BMI")
+plt.ylabel("Disease Progression")
+plt.title("Linear Regression on Diabetes Dataset")
+plt.grid(True)
+
+plt.savefig("static/graphs/regression.png")
+plt.close()
+</code></pre>
+
+<br>
+
+<a href="{{ url_for('run_experiment', id=1) }}">
+    <button type="button">▶ Run Experiment</button>
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+<pre>{{ output }}</pre>
+{% else %}
+<p><b>Click "Run Experiment" to execute the program.</b></p>
+{% endif %}
+
+<hr>
+
+<h3>Regression Graph</h3>
+
+{% if graph %}
+<img src="{{ url_for('static', filename=graph) }}"
+     alt="Regression Graph"
+     width="700">
+{% else %}
+<p><b>Graph will appear here after running the experiment.</b></p>
+{% endif %}
+
+<hr>
+
+<h3>Pre-Lab Questions</h3>
+
+<ol>
+    <li>Why is using only one feature beneficial for visualization, and what are its limitations?</li>
+    <li>What does the regression coefficient represent?</li>
+</ol>
+
+<hr>
+
+<h3>Post-Lab Questions</h3>
+
+<ol>
+    <li>Why might many points lie far from the regression line?</li>
+    <li>What does an uneven spread of residuals indicate?</li>
+</ol>
+
+<hr>
+
+<h3>Result</h3>
+
+<p>
+The Linear Regression model was successfully implemented using the Diabetes dataset. Disease progression was predicted using the BMI feature, and the model performance was evaluated using Mean Squared Error (MSE) and R² Score.
+</p>
+
+{% endblock %}

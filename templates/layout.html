@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        Virtual Machine Learning Laboratory
+        {% endblock %}
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="icon"
+          href="{{ url_for('static', filename='images/srm_logo.png') }}">
+
+</head>
+
+<body>
+
+    <!-- ========================= HEADER ========================= -->
+
+    <header class="header">
+
+        <div class="header-text">
+
+            <h1>SRM Institute of Science and Technology</h1>
+
+            <h2>Department of Electronics and Communication Engineering</h2>
+
+            <h3>Virtual Machine Learning Laboratory</h3>
+
+        </div>
+
+    </header>
+
+    <!-- ========================= CONTENT ========================= -->
+
+    <div class="container">
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+    <!-- ========================= FOOTER ========================= -->
+
+    <footer>
+
+        <p><strong>Virtual Machine Learning Laboratory</strong></p>
+
+        <p>Department of Electronics and Communication Engineering</p>
+
+        <p>SRM Institute of Science and Technology</p>
+
+        <p>© 2026 All Rights Reserved.</p>
+
+    </footer>
+
+</body>
+
+</html>

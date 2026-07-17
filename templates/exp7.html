@@ -1,0 +1,386 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 7 - Random Forest Classification
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}" class="back-btn">
+⬅ Back to Home
+</a>
+
+<h1>Experiment 7</h1>
+
+<h2>
+Heart Disease Prediction using Random Forest Classifier
+</h2>
+
+<hr>
+
+<h3>Aim</h3>
+
+<p>
+To develop and evaluate a Machine Learning model using the Random Forest Classifier to predict the presence of heart disease based on clinical attributes.
+</p>
+
+<hr>
+
+<h3>Algorithm</h3>
+
+<ol>
+
+<li>Import the required Python libraries.</li>
+
+<li>Load the Heart Disease dataset.</li>
+
+<li>Explore the dataset and check for missing values.</li>
+
+<li>Separate the dataset into feature variables (X) and target variable (y).</li>
+
+<li>Split the dataset into training and testing sets (80:20).</li>
+
+<li>Initialize the Random Forest Classifier.</li>
+
+<li>Train the model using the training dataset.</li>
+
+<li>Predict the class labels for the testing dataset.</li>
+
+<li>Evaluate the model using Accuracy, Precision, Recall, F1-Score and Confusion Matrix.</li>
+
+<li>Display the evaluation results.</li>
+
+</ol>
+
+<hr>
+
+<h3>About Dataset</h3>
+
+<p>
+
+The Heart Disease Prediction dataset contains clinical information collected from patients to determine whether heart disease is present.
+
+</p>
+
+<h4>Dataset Characteristics</h4>
+
+<ul>
+
+<li><b>Number of Samples :</b> 270</li>
+
+<li><b>Number of Features :</b> 4</li>
+
+<li><b>Features :</b> Age, Sex, Blood Pressure, Cholesterol</li>
+
+<li><b>Target :</b> Heart Disease (1 = Disease Present, 0 = No Disease)</li>
+
+</ul>
+
+<hr>
+
+<h3>Python Program</h3>
+
+<pre><code>
+
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix,
+    ConfusionMatrixDisplay
+)
+
+# -------------------------------------------------
+# Create Graph Folder
+# -------------------------------------------------
+
+os.makedirs("static/graphs", exist_ok=True)
+
+# -------------------------------------------------
+# Load Dataset
+# -------------------------------------------------
+
+dataset = pd.read_csv("heart_v2.csv")
+
+# Remove leading/trailing spaces in column names
+dataset.columns = dataset.columns.str.strip()
+
+print("=" * 60)
+print("HEART DISEASE PREDICTION USING RANDOM FOREST")
+print("=" * 60)
+
+print("\nFirst Five Records\n")
+print(dataset.head())
+
+print("\nDataset Shape :", dataset.shape)
+
+print("\nColumn Names")
+print(dataset.columns.tolist())
+
+print("\nMissing Values\n")
+print(dataset.isnull().sum())
+
+# -------------------------------------------------
+# Feature and Target
+# -------------------------------------------------
+
+X = dataset.drop("target", axis=1)
+y = dataset["target"]
+
+# -------------------------------------------------
+# Train Test Split
+# -------------------------------------------------
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.30,
+    random_state=42,
+    stratify=y
+)
+
+print("\nTraining Samples :", X_train.shape)
+print("Testing Samples  :", X_test.shape)
+
+# -------------------------------------------------
+# Random Forest Model
+# -------------------------------------------------
+
+model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42,
+    n_jobs=-1
+)
+
+# -------------------------------------------------
+# Train Model
+# -------------------------------------------------
+
+model.fit(X_train, y_train)
+
+# -------------------------------------------------
+# Prediction
+# -------------------------------------------------
+
+y_pred = model.predict(X_test)
+
+# -------------------------------------------------
+# Accuracy
+# -------------------------------------------------
+
+accuracy = accuracy_score(y_test, y_pred)
+
+print("\nAccuracy : {:.2f}%".format(accuracy * 100))
+
+# -------------------------------------------------
+# Classification Report
+# -------------------------------------------------
+
+print("\nClassification Report\n")
+print(classification_report(y_test, y_pred))
+
+# -------------------------------------------------
+# Confusion Matrix
+# -------------------------------------------------
+
+cm = confusion_matrix(y_test, y_pred)
+
+print("\nConfusion Matrix\n")
+print(cm)
+
+fig, ax = plt.subplots(figsize=(6,5))
+
+disp = ConfusionMatrixDisplay(
+    confusion_matrix=cm,
+    display_labels=model.classes_
+)
+
+disp.plot(ax=ax, cmap="Blues")
+
+plt.title("Random Forest Confusion Matrix")
+
+plt.savefig(
+    "static/graphs/random_forest.png",
+    dpi=150,
+    bbox_inches="tight"
+)
+
+plt.close()
+
+print("\nConfusion Matrix Graph Saved Successfully.")
+
+# -------------------------------------------------
+# Feature Importance
+# -------------------------------------------------
+
+importance = pd.DataFrame({
+    "Feature": X.columns,
+    "Importance": model.feature_importances_
+})
+
+importance = importance.sort_values(
+    by="Importance",
+    ascending=False
+)
+
+print("\nFeature Importance\n")
+print(importance)
+
+plt.figure(figsize=(8,5))
+
+plt.bar(
+    importance["Feature"],
+    importance["Importance"]
+)
+
+plt.xticks(rotation=45)
+plt.xlabel("Features")
+plt.ylabel("Importance")
+plt.title("Feature Importance")
+
+plt.tight_layout()
+
+plt.savefig(
+    "static/graphs/feature_importance.png",
+    dpi=150,
+    bbox_inches="tight"
+)
+
+plt.close()
+
+print("\nFeature Importance Graph Saved Successfully.")
+
+# -------------------------------------------------
+# Final Message
+# -------------------------------------------------
+
+print("\nExperiment Completed Successfully.")
+print("Graph 1 : static/graphs/random_forest.png")
+print("Graph 2 : static/graphs/feature_importance.png")
+
+# -------------------------------------------------
+# Feature Importance
+# -------------------------------------------------
+
+importance = pd.DataFrame({
+    "Feature": X.columns,
+    "Importance": model.feature_importances_
+}).sort_values(by="Importance", ascending=False)
+
+print("\nFeature Importance:\n")
+print(importance)
+
+plt.figure(figsize=(8,5))
+plt.bar(importance["Feature"], importance["Importance"])
+plt.xticks(rotation=45)
+plt.title("Feature Importance")
+plt.tight_layout()
+
+plt.savefig(
+    "static/graphs/random_forest_features.png",
+    dpi=150,
+    bbox_inches="tight"
+)
+
+plt.close()
+
+print("Feature Importance Graph Saved Successfully.")
+print("Saved as : static/graphs/random_forest_features.png")
+</code></pre>
+
+<br>
+
+<a href="{{ url_for('run_experiment', id=7) }}">
+
+<button type="button">
+
+▶ Run Experiment
+
+</button>
+
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+
+<pre>{{ output }}</pre>
+
+{% else %}
+
+<p>
+
+<b>Click "Run Experiment" to execute the program.</b>
+
+</p>
+
+{% endif %}
+
+<hr>
+
+<h3>Confusion Matrix</h3>
+
+{% if graph %}
+
+<img src="{{ url_for('static', filename=graph) }}"
+width="700">
+
+{% else %}
+
+<p>
+
+<b>Confusion Matrix will appear here after running the experiment.</b>
+
+</p>
+
+{% endif %}
+<hr>
+
+<h3>Pre-Lab Questions</h3>
+
+<ol>
+
+<li>
+What is the main principle behind the Random Forest algorithm, and how does it differ from a single Decision Tree?
+</li>
+
+<li>
+What is feature importance in Random Forest, and how is it calculated? Explain its significance in feature selection.
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Post-Lab Questions</h3>
+
+<ol>
+
+<li>
+Train the Random Forest model with different values of <b>n_estimators</b> (10, 50, and 100). Compare the accuracy obtained for each case and explain how increasing the number of trees affects the model performance.
+</li>
+
+<li>
+Compare the performance of the Random Forest classifier with another classification algorithm such as Logistic Regression or Support Vector Machine (SVM) on the Heart Disease dataset. Which model performs better and why?
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Result</h3>
+
+<p>
+
+The Random Forest Classifier was successfully implemented on the Heart Disease dataset. The model was trained and evaluated using Accuracy Score, Classification Report, and Confusion Matrix. The confusion matrix was generated and visualized, demonstrating the effectiveness of the Random Forest algorithm for heart disease prediction.
+
+</p>
+
+{% endblock %}

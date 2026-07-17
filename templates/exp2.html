@@ -1,0 +1,214 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 2 - Logistic Regression
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}" class="back-btn">⬅ Back to Home</a>
+
+<h1>Experiment 2</h1>
+
+<h2>Binary Classification of Diabetes Progression Using Logistic Regression</h2>
+
+<hr>
+
+<h3>Aim</h3>
+
+<p>
+To write a Python program for Logistic Regression using the Scikit-learn module and the Diabetes dataset to classify diabetes disease progression.
+</p>
+
+<hr>
+
+<h3>Algorithm</h3>
+
+<ol>
+    <li>Load the Diabetes dataset.</li>
+    <li>Convert the continuous target variable into a binary target using the median value.</li>
+    <li>Split the dataset into training and testing sets.</li>
+    <li>Standardize the feature values.</li>
+    <li>Create and train the Logistic Regression model.</li>
+    <li>Predict the class labels for the test data.</li>
+    <li>Generate the Classification Report.</li>
+    <li>Generate and display the Confusion Matrix.</li>
+</ol>
+
+<hr>
+
+<h3>About the Dataset</h3>
+
+<p>
+The Diabetes dataset contains baseline variables such as age, sex, body mass index (BMI), blood pressure, and six blood serum measurements for <b>442 diabetes patients</b>. The target variable represents the quantitative measure of disease progression one year after baseline.
+</p>
+
+<h4>Dataset Characteristics</h4>
+
+<ul>
+    <li><b>Number of Instances:</b> 442</li>
+    <li><b>Number of Attributes:</b> 10 predictive features</li>
+    <li><b>Target:</b> Quantitative measure of disease progression</li>
+</ul>
+
+<h4>Features</h4>
+
+<ul>
+    <li>Age</li>
+    <li>Sex</li>
+    <li>BMI (Body Mass Index)</li>
+    <li>Blood Pressure</li>
+    <li>s1 - Total Cholesterol</li>
+    <li>s2 - LDL</li>
+    <li>s3 - HDL</li>
+    <li>s4 - Thyroid Stimulating Hormone</li>
+    <li>s5 - Lamotrigine</li>
+    <li>s6 - Blood Sugar Level</li>
+</ul>
+
+<hr>
+
+<h3>Python Program</h3>
+
+<pre><code>
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.datasets import load_diabetes
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Load dataset
+diabetes = load_diabetes()
+
+X = diabetes.data
+y = diabetes.target
+
+# Convert target into binary
+y_binary = np.where(y > np.median(y), 1, 0)
+
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y_binary,
+    test_size=0.2,
+    random_state=42
+)
+
+# Train Logistic Regression model
+model = LogisticRegression(max_iter=1000)
+
+model.fit(X_train, y_train)
+
+# Predict
+y_pred = model.predict(X_test)
+
+# Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+
+# Classification Report
+report = classification_report(y_test, y_pred)
+
+print("Accuracy:", accuracy)
+
+print("Confusion Matrix")
+print(cm)
+
+print("Classification Report")
+print(report)
+
+# Plot confusion matrix
+plt.figure(figsize=(6,4))
+
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues"
+)
+
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Confusion Matrix")
+
+plt.savefig("static/graphs/logistic.png")
+
+plt.close()
+</code></pre>
+
+<br>
+
+<a href="{{ url_for('run_experiment', id=2) }}">
+    <button type="button">▶ Run Experiment</button>
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+<pre>{{ output }}</pre>
+{% else %}
+<p><b>Click "Run Experiment" to execute the program.</b></p>
+{% endif %}
+
+<hr>
+
+<h3>Confusion Matrix</h3>
+
+{% if graph %}
+<img src="{{ url_for('static', filename=graph) }}"
+     width="700"
+     alt="Confusion Matrix">
+{% else %}
+<p><b>Confusion Matrix will appear here after running the experiment.</b></p>
+{% endif %}
+
+<hr>
+
+<h3>Pre-Lab Questions</h3>
+
+<ol>
+
+<li>
+Why is it necessary to standardize the features before training a Logistic Regression model, and how does it affect the performance of the model?
+</li>
+
+<li>
+The diabetes dataset includes continuous target values. What considerations should be made when converting this into a binary classification problem?
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Post-Lab Questions</h3>
+
+<ol>
+
+<li>
+How would the performance of the Logistic Regression model change if the threshold for binary classification were adjusted from the median to another percentile (for example, the 75th percentile)? Explain.
+</li>
+
+<li>
+Examine the confusion matrix and classification report. What do these metrics reveal about the strengths and weaknesses of the model?
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Result</h3>
+
+<p>
+
+The Logistic Regression model was successfully implemented using the Diabetes dataset. The continuous target variable was converted into a binary classification problem, and the model performance was evaluated using Accuracy, Confusion Matrix, and Classification Report.
+
+</p>
+
+{% endblock %}

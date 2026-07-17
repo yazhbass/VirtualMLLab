@@ -1,0 +1,496 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Experiment 11 - Convolutional Neural Network (CNN)
+{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}" class="back-btn">
+⬅ Back to Home
+</a>
+
+<h1>Experiment 11</h1>
+
+<h2>Convolutional Neural Network using Fashion-MNIST Dataset</h2>
+
+<hr>
+
+<h3>Aim</h3>
+
+<p>
+To write a Python program for implementing a Convolutional Neural Network (CNN) using Keras with TensorFlow backend on the Fashion-MNIST dataset and evaluate its performance.
+</p>
+
+<hr>
+
+<h3>Algorithm</h3>
+
+<ol>
+
+<li>Import the required Keras, TensorFlow and Scikit-Learn libraries.</li>
+
+<li>Define configuration parameters such as batch size, epochs and number of classes.</li>
+
+<li>Load the Fashion-MNIST dataset.</li>
+
+<li>Preprocess the images by reshaping and normalizing them.</li>
+
+<li>Convert labels into one-hot encoded vectors.</li>
+
+<li>Split the training dataset into training and validation sets.</li>
+
+<li>Create the CNN model using convolution, activation, pooling and dense layers.</li>
+
+<li>Compile the CNN model using Adam optimizer.</li>
+
+<li>Display the model summary.</li>
+
+<li>Train the CNN model.</li>
+
+<li>Evaluate the model using the test dataset.</li>
+
+<li>Display the training accuracy, validation accuracy, loss and test accuracy.</li>
+
+</ol>
+
+<hr>
+
+<h3>About Dataset</h3>
+
+<p>
+
+Fashion-MNIST is a dataset consisting of grayscale images of clothing articles from ten different categories. It is a replacement for the handwritten digit MNIST dataset and is widely used for image classification.
+
+</p>
+
+<h4>Dataset Characteristics</h4>
+
+<ul>
+
+<li><b>Training Images :</b> 60,000</li>
+
+<li><b>Testing Images :</b> 10,000</li>
+
+<li><b>Image Size :</b> 28 × 28 pixels</li>
+
+<li><b>Classes :</b> 10</li>
+
+<li><b>Total Images :</b> 70,000</li>
+
+</ul>
+
+<h4>Classes</h4>
+
+<ul>
+
+<li>T-Shirt / Top</li>
+
+<li>Trouser</li>
+
+<li>Pullover</li>
+
+<li>Dress</li>
+
+<li>Coat</li>
+
+<li>Sandal</li>
+
+<li>Shirt</li>
+
+<li>Sneaker</li>
+
+<li>Bag</li>
+
+<li>Ankle Boot</li>
+
+</ul>
+
+<hr>
+
+<h3>Python Program</h3>
+
+<pre><code>
+
+import keras
+
+from keras.models import Sequential
+
+from keras.layers import Dense
+
+from keras.layers import Flatten
+
+from keras.layers import Conv2D
+
+from keras.layers import MaxPooling2D
+
+from keras.layers import LeakyReLU
+
+from keras.datasets import fashion_mnist
+
+from keras.utils import to_categorical
+
+from sklearn.model_selection import train_test_split
+
+import matplotlib.pyplot as plt
+
+batch_size=128
+
+epochs=5
+
+num_classes=10
+
+(train_X,train_Y),(test_X,test_Y)=fashion_mnist.load_data()
+
+print("Training Shape :",train_X.shape)
+
+print("Testing Shape :",test_X.shape)
+
+train_X=train_X.reshape(-1,28,28,1)
+
+test_X=test_X.reshape(-1,28,28,1)
+
+train_X=train_X.astype("float32")/255.
+
+test_X=test_X.astype("float32")/255.
+
+train_Y=to_categorical(train_Y)
+
+test_Y=to_categorical(test_Y)
+
+train_X,valid_X,train_label,valid_label=train_test_split(
+
+train_X,
+
+train_Y,
+
+test_size=0.2,
+
+random_state=13
+
+)
+
+fashion_model=Sequential()
+
+fashion_model.add(
+
+Conv2D(
+
+32,
+
+kernel_size=(3,3),
+
+padding="same",
+
+activation="linear",
+
+input_shape=(28,28,1)
+
+)
+
+)
+
+fashion_model.add(
+
+LeakyReLU(alpha=0.1)
+
+)
+
+fashion_model.add(
+
+MaxPooling2D(
+
+pool_size=(2,2),
+
+padding="same"
+
+)
+
+)
+
+fashion_model.add(
+
+Conv2D(
+
+64,
+
+(3,3),
+
+padding="same",
+
+activation="linear"
+
+)
+
+)
+
+fashion_model.add(
+
+LeakyReLU(alpha=0.1)
+
+)
+
+fashion_model.add(
+
+MaxPooling2D(
+
+pool_size=(2,2),
+
+padding="same"
+
+)
+
+)
+
+fashion_model.add(
+
+Conv2D(
+
+128,
+
+(3,3),
+
+padding="same",
+
+activation="linear"
+
+)
+
+)
+
+fashion_model.add(
+
+LeakyReLU(alpha=0.1)
+
+)
+
+fashion_model.add(
+
+MaxPooling2D(
+
+pool_size=(2,2),
+
+padding="same"
+
+)
+
+)
+
+fashion_model.add(
+
+Flatten()
+
+)
+
+fashion_model.add(
+
+Dense(
+
+128,
+
+activation="linear"
+
+)
+
+)
+
+fashion_model.add(
+
+LeakyReLU(alpha=0.1)
+
+)
+
+fashion_model.add(
+
+Dense(
+
+num_classes,
+
+activation="softmax"
+
+)
+
+)
+
+fashion_model.compile(
+
+loss="categorical_crossentropy",
+
+optimizer="adam",
+
+metrics=["accuracy"]
+
+)
+
+fashion_model.summary()
+
+history=fashion_model.fit(
+
+train_X,
+
+train_label,
+
+batch_size=batch_size,
+
+epochs=epochs,
+
+validation_data=(valid_X,valid_label)
+
+)
+
+test_eval=fashion_model.evaluate(
+
+test_X,
+
+test_Y,
+
+verbose=0
+
+)
+
+print("Test Loss :",test_eval[0])
+
+print("Test Accuracy :",test_eval[1])
+
+</code></pre>
+
+<br>
+
+<a href="{{ url_for('run_experiment', id=11) }}">
+
+<button type="button">
+
+▶ Run Experiment
+
+</button>
+
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+
+<pre>{{ output }}</pre>
+
+{% else %}
+
+<p><b>Click "Run Experiment" to execute the program.</b></p>
+
+{% endif %}
+
+<hr>
+
+<h3>Training Accuracy Graph</h3>
+
+{% if graph1 %}
+
+<img src="{{ url_for('static', filename=graph1) }}" width="750">
+
+{% else %}
+
+<p><b>Training Accuracy graph will appear here.</b></p>
+
+{% endif %}
+
+<hr>
+
+<h3>Training Loss Graph</h3>
+
+{% if graph2 %}
+
+<img src="{{ url_for('static', filename=graph2) }}" width="750">
+
+{% else %}
+
+<p><b>Training Loss graph will appear here.</b></p>
+
+{% endif %}
+
+<hr>
+<br>
+
+<a href="{{ url_for('run_experiment', id=11) }}">
+    <button type="button">
+        ▶ Run Experiment
+    </button>
+</a>
+
+<hr>
+
+<h3>Program Output</h3>
+
+{% if output %}
+
+<pre>{{ output }}</pre>
+
+{% else %}
+
+<p><b>Click "Run Experiment" to execute the program.</b></p>
+
+{% endif %}
+
+<hr>
+
+<h3>Training Accuracy Graph</h3>
+
+{% if graph %}
+
+<img src="{{ url_for('static', filename=graph) }}"
+     width="750"
+     alt="CNN Accuracy Graph">
+
+{% else %}
+
+<p><b>Training Accuracy Graph will appear here after running the experiment.</b></p>
+
+{% endif %}
+
+<hr>
+
+<h3>Pre-Lab Questions</h3>
+
+<ol>
+
+<li>
+What are the functions of different components of CNN used in the program?
+</li>
+
+<li>
+Why is reshaping the training and testing data necessary before feeding it into the CNN model?
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Post-Lab Questions</h3>
+
+<ol>
+
+<li>
+Modify the CNN program to use another image dataset such as CIFAR-10. Compare the obtained accuracy with Fashion-MNIST.
+</li>
+
+<li>
+Using suitable code examples, explain how increasing or decreasing the amount of training data affects the CNN classifier performance.
+</li>
+
+<li>
+Expand the dataset by increasing the amount of training data and then reduce the training data. Compare the resulting training accuracy and test accuracy.
+</li>
+
+</ol>
+
+<hr>
+
+<h3>Result</h3>
+
+<p>
+
+The Convolutional Neural Network (CNN) was successfully implemented using the Fashion-MNIST dataset with the Keras library and TensorFlow backend. The model was trained, evaluated on the test dataset, and its performance was measured using test loss and accuracy.
+
+</p>
+
+{% endblock %}
