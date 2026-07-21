@@ -187,3 +187,38 @@ grid-template-columns:1fr;
 }
 
 }
+.instructor-card{
+    position:fixed;
+    bottom:15px;
+    right:15px;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    background:#fff;
+    padding:8px 12px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.2);
+
+    z-index:1000;
+}
+
+.instructor-photo{
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #003366;
+}
+
+.instructor-info h5{
+    margin:0;
+    color:#003366;
+    font-size:15px;
+}
+
+.instructor-info p{
+    margin:1px 0;
+    font-size:12px;
+}
